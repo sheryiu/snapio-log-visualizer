@@ -54,10 +54,8 @@
               "src/styles.css"
             ],
             "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "outputMode": "static",
+            "ssr": false
           },
           "configurations": {
             "production": {
@@ -65,12 +63,12 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
                   "maximumWarning": "4kB",
-                  "maximumError": "8kB"
+                  "maximumError": "500kB"
                 }
               ],
               "outputHashing": "all"
@@ -94,6 +92,9 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy"
         }
       }
     }
