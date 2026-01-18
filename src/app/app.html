@@ -1,0 +1,25 @@
+<pui-root-sidenav>
+  <div class="pui-root-sidenav__header__logo flex flex-row-reverse lg:flex-row items-center gap-3">
+    <h3>Snapio Log Visualizer</h3>
+  </div>
+
+  <div class="pui-root-sidenav__nav">
+    <nav
+      class="grid grid-cols-1 gap-4 p-4 flex-none"
+    >
+      <button puiBorderedButton color="primary" class="rounded-2 py-3 px-4 max-h-16 w-full gap-2" (click)="openFilePicker()">
+        <i class="icon-6 font-variation-weight-light">upload</i>
+        <span class="text-base uppercase">Upload</span>
+      </button>
+    </nav>
+    <pui-divider></pui-divider>
+    <pui-vertical-navigation-menu class="overflow-auto">
+      @for (file of storedFiles(); track file) {
+        <pui-menu-item
+          [label]="file"
+          [route]="['visualize', file]"
+        ></pui-menu-item>
+      }
+    </pui-vertical-navigation-menu>
+  </div>
+</pui-root-sidenav>

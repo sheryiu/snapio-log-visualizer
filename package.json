@@ -1,0 +1,53 @@
+{
+  "name": "snapio-log-visualizer",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "serve:ssr:snapio-log-visualizer": "node dist/snapio-log-visualizer/server/server.mjs"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@10.9.4",
+  "dependencies": {
+    "@angular/cdk": "~21.1.0",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/platform-server": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@angular/ssr": "^21.1.0",
+    "@types/wicg-file-system-access": "^2023.10.7",
+    "express": "^5.1.0",
+    "portal-ui-ng": "^0.3.2",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.1.0",
+    "@angular/cli": "^21.1.0",
+    "@angular/compiler-cli": "^21.1.0",
+    "@tailwindcss/postcss": "^4.1.12",
+    "@types/express": "^5.0.1",
+    "@types/node": "^20.17.19",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^4.1.12",
+    "typescript": "~5.9.2"
+  }
+}

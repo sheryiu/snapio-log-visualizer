@@ -1,0 +1,104 @@
+<header class="visualize__header">
+  <span class="visualize__header--year">Year</span>
+  <span class="visualize__header--month">Mon</span>
+  <span class="visualize__header--day">Day</span>
+  <span class="visualize__header--hour">Hour</span>
+  <span class="visualize__header--minute">Min</span>
+  <span class="visualize__header--second">Sec</span>
+  @for (actor of actors; track actor) {
+    <span class="visualize__header--actor" [attr.data-actor]="actor"></span>
+  }
+</header>
+@for (yearGroup of organizedEvents().byYear; track yearGroup.year) {
+  <div class="visualize__group ms-4">
+    <div class="visualize__group-header visualize__group-header--year">
+      <span>{{ yearGroup.year }}</span>
+    </div>
+    <div class="visualize__group-contents">
+      @for (monthGroup of yearGroup.byMonth; track monthGroup.month) {
+        <div class="visualize__group">
+          <div class="visualize__group-header visualize__group-header--month">
+            <span>{{ monthGroup.month }}</span>
+          </div>
+          <div class="visualize__group-contents">
+            @for (dayGroup of monthGroup.byDay; track dayGroup.day) {
+              <div class="visualize__group">
+                <div class="visualize__group-header visualize__group-header--day">
+                  <span>{{ dayGroup.day }}</span>
+                </div>
+                <div class="visualize__group-contents">
+                  @for (hourGroup of dayGroup.byHour; track hourGroup.hour) {
+                    <div class="visualize__group">
+                      <div class="visualize__group-header visualize__group-header--hour">
+                        <span>{{ hourGroup.hour }}</span>
+                      </div>
+                      <div class="visualize__group-contents">
+                        @for (minuteGroup of hourGroup.byMinute; track minuteGroup.minute) {
+                          <div class="visualize__group">
+                            <div class="visualize__group-header visualize__group-header--minute">
+                              <span>{{ minuteGroup.minute }}</span>
+                            </div>
+                            <div class="visualize__group-contents">
+                              @for (secondGroup of minuteGroup.bySecond; track secondGroup.second) {
+                                <div class="visualize__group">
+                                  <div class="visualize__group-header visualize__group-header--second">
+                                    <span>{{ secondGroup.second }}</span>
+                                  </div>
+                                  <div class="visualize__group-contents">
+                                    @for (event of secondGroup.events; track event.event.__id) {
+                                      <a class="visualize__event" puiHoverable>
+                                        @for (actor of actors; track actor) {
+                                          @if (event.actorAction[actor]) {
+                                            <div class="visualize__event-actor" [attr.data-type]="event.actorAction[actor]"></div>
+                                          } @else {
+                                            <div class="visualize__event-actor visualize__event-actor--empty"></div>
+                                          }
+                                        }
+                                        @if (event.direction == 'LEFT' || event.direction == 'RIGHT') {
+                                          <div class="visualize__event-actor-direction" [attr.data-direction]="event.direction"></div>
+                                        }
+                                        @switch (event.event.__type) {
+                                          @case ('ActorInitializationEvent') {
+                                            <div class="visualize__event--ai">
+                                              <span>Initialized</span>
+                                              <code>{{ event.event.actor }}</code>
+                                              <span>in</span>
+                                              <code>{{ event.event.inActor }}</code>
+                                            </div>
+                                          }
+                                          @case ('ActorFinalizationEvent') {
+                                            <div class="visualize__event--af">
+                                              <span>Finalized</span>
+                                              <code>{{ event.event.actor }}</code>
+                                              <span>in</span>
+                                              <code>{{ event.event.inActor }}</code>
+                                            </div>
+                                          }
+                                          @case ('ErrorEvent') {
+                                            <div class="visualize__event--err">
+                                              <span>Error</span>
+                                              <code>{{ event.event.code }}</code>
+                                              <span>{{ event.event.message }}</span>
+                                            </div>
+                                          }
+                                        }
+                                      </a>
+                                    }
+                                  </div>
+                                </div>
+                              }
+                            </div>
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,0 +1,158 @@
+@reference "../../../styles.css";
+@layer utilities {
+  .visualize__header {
+    @apply sticky top-0 z-10 flex;
+    @apply dark:bg-neutral-800 dark:text-neutral-300 border-b;
+    @apply font-mono text-lg uppercase font-light tracking-wider text-center;
+    .visualize__header--year {
+      width: calc(4ch + var(--spacing) * 8 + 1px);
+    }
+    .visualize__header--month,
+    .visualize__header--day,
+    .visualize__header--hour,
+    .visualize__header--minute,
+    .visualize__header--second {
+      width: calc(2ch + var(--spacing) * 8 + 1px);
+    }
+    .visualize__header--actor {
+      @apply flex items-center before:icon-5 before:font-variation-weight-light;
+      &[data-actor="anonymous"] {
+        @apply ps-4;
+      }
+      &[data-actor="anonymous"]::before {
+        content: 'computer';
+      }
+      &[data-actor="camera-manager"]::before {
+        content: 'photo_camera';
+      }
+      &[data-actor="printer-manager"]::before {
+        content: 'print';
+      }
+      &[data-actor="ad-screen-manager"]::before {
+        content: 'wallpaper';
+      }
+      &[data-actor="viewfinder-manager"]::before {
+        content: 'airplay';
+      }
+      &[data-actor="relay-manager"]::before {
+        content: 'cable';
+      }
+      &[data-actor="qr-code-manager"]::before {
+        content: 'qr_code';
+      }
+      &[data-actor="image-combine"]::before {
+        content: 'image';
+      }
+      &[data-actor="live-photo"]::before {
+        content: 'video_file';
+      }
+      &[data-actor="loading"]::before {
+        content: 'cloud_download';
+      }
+      &[data-actor="root"]::before {
+        content: 'start';
+      }
+      &[data-actor="session"]::before {
+        content: 'receipt_long';
+      }
+      &[data-actor="member-login"]::before {
+        content: 'account_box';
+      }
+      &[data-actor="process-payment"]::before {
+        content: 'attach_money';
+      }
+      &[data-actor="paid-for-capturing"]::before {
+        content: 'price_check';
+      }
+      &[data-actor="capture"]::before {
+        content: 'camera_video';
+      }
+      &[data-actor="paid-for-reprint"]::before {
+        content: 'photo_prints';
+      }
+      &[data-actor="complete-session"]::before {
+        content: 'autostop';
+      }
+      &[data-actor="dev"]::before {
+        content: 'terminal';
+      }
+    }
+  }
+  .visualize__group {
+    @apply flex flex-row;
+  }
+
+  .visualize__group-header {
+    @apply sticky h-fit top-8 pe-4;
+    @apply flex flex-row;
+    @apply text-lg font-mono dark:text-neutral-300;
+    > span {
+      @apply font-bold;
+    }
+    &:where(.visualize__group-header--year, .visualize__group-header--month) {
+      @apply after:content-['–'] after:font-bold dark:after:text-neutral-400;
+      @apply after:absolute after:-right-[0.5ch];
+    }
+    &:where(.visualize__group-header--hour, .visualize__group-header--minute) {
+      @apply after:content-[':'] after:font-bold dark:after:text-neutral-400;
+      @apply after:absolute after:-right-[0.5ch];
+    }
+  }
+
+  .visualize__group-contents {
+    @apply flex flex-col border-l ps-4 grow;
+  }
+
+  .visualize__event {
+    @apply flex flex-row justify-start;
+    @apply text-lg;
+
+    span {
+      @apply dark:text-neutral-300 font-medium;
+    }
+
+    code {
+      @apply font-mono dark:text-neutral-200 dark:bg-neutral-800 px-1.5 mx-1.5 rounded border select-all;
+    }
+
+    .visualize__event--err {
+      span {
+        @apply dark:text-red-500;
+      }
+      code {
+        @apply dark:text-red-200;
+      }
+    }
+  }
+
+  .visualize__event-actor {
+    @apply w-5 relative flex justify-center items-center;
+
+    &[data-type="FROM"] {
+      @apply before:size-2 before:rounded-full before:bg-lime-300;
+      anchor-name: --from;
+    }
+    &[data-type="TO"] {
+      @apply before:size-2 before:rounded-full before:bg-green-600;
+      anchor-name: --to;
+    }
+  }
+
+  .visualize__event-actor-direction {
+    @apply absolute;
+    &[data-direction="LEFT"] {
+      left: calc(anchor(--to left) + var(--spacing) * 2.5);
+      right: calc(anchor(--from right) + var(--spacing) * 2.5);
+      height: 2px;
+      @apply bg-linear-to-l dark:from-lime-300 dark:to-green-600;
+      @apply dark:before:text-green-600 before:content-['chevron\_left'] before:icon-6 before:absolute before:-translate-y-1/2 before:top-px before:-left-1.5;
+    }
+    &[data-direction="RIGHT"] {
+      left: calc(anchor(--from left) + var(--spacing) * 2.5);
+      right: calc(anchor(--to right) + var(--spacing) * 2.5);
+      height: 2px;
+      @apply bg-linear-to-r dark:from-lime-300 dark:to-green-600;
+      @apply dark:before:text-green-600 before:content-['chevron\_right'] before:icon-6 before:absolute before:-translate-y-1/2 before:top-px before:-right-1.5;
+    }
+  }
+}

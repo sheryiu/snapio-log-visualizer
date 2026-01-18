@@ -1,0 +1,46 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "tailwindcss";
+@source "../node_modules/portal-ui-ng";
+@import 'portal-ui-ng/assets/base/_index.css';
+@import 'portal-ui-ng/assets/components/_index.css';
+@import 'portal-ui-ng/assets/pages/_index.css';
+
+@theme {
+  --color-primary-100: #f7ffed;
+  --color-primary-200: #edffe0;
+  --color-primary-300: #ccffb3;
+  --color-primary-400: #7dff52;
+  --color-primary-500: #6dee43;
+  --color-primary-600: #43c415;
+  --color-primary-700: #31a700;
+  --color-primary-800: #278900;
+  --color-primary-900: #196000;
+  --color-primary-950: #0f4500;
+  --color-accent-50: #fffbea;
+  --color-accent-100: #fff2c5;
+  --color-accent-200: #ffe485;
+  --color-accent-300: #ffd046;
+  --color-accent-400: #ffba1b;
+  --color-accent-500: #ff9600;
+  --color-accent-600: #e26f00;
+  --color-accent-700: #bb4b02;
+  --color-accent-800: #983908;
+  --color-accent-900: #7c2f0b;
+  --color-accent-950: #481600;
+
+  --font-sans: 'Inter',
+    ui-sans-serif,
+    system-ui,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+}
+
+@layer base {
+  h3 {
+    @apply font-light text-lg tracking-wider;
+  }
+}
