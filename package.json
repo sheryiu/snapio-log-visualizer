@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "serve:ssr:snapio-log-visualizer": "node dist/snapio-log-visualizer/server/server.mjs"
+    "serve:ssr:snapio-log-visualizer": "node dist/snapio-log-visualizer/server/server.mjs",
+    "deploy": "ng deploy --base-href=/snapio-log-visualizer/"
   },
   "prettier": {
     "printWidth": 100,
