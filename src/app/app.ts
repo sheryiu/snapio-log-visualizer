@@ -62,8 +62,9 @@ export class App {
       // Create or get a 'logs' subdirectory
       const logsDir = await root.getDirectoryHandle('logs', { create: true });
 
+      const fileName = file.name.includes('.') ? file.name.slice(0, file.name.lastIndexOf('.')) : file.name;
       // Create a file handle with the same name as the uploaded file
-      const fileHandle = await logsDir.getFileHandle(file.name, { create: true });
+      const fileHandle = await logsDir.getFileHandle(fileName, { create: true });
 
       // Create a writable stream
       const writable = await fileHandle.createWritable();
@@ -72,7 +73,7 @@ export class App {
       await writable.write(file);
       await writable.close();
 
-      console.log(`File stored in OPFS: ${file.name}`);
+      console.log(`File stored in OPFS: ${fileName}`);
 
       // Log all stored files
       await this.listStoredFiles(logsDir);

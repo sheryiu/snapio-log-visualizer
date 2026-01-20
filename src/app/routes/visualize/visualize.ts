@@ -3,7 +3,7 @@ import { Component, computed, effect, inject, input, PLATFORM_ID, signal } from 
 import { HoverableDirective } from 'portal-ui-ng/base';
 import { SnackbarService } from 'portal-ui-ng/components';
 import { ACTORS } from '../../models/actors';
-import { ActorFinalizationEvent, ActorInitializationEvent, ErrorEvent, SnapioEvent } from '../../models/events';
+import { ActorFinalizationEvent, ActorInitializationEvent, ErrorEvent, InterActorCommunicationEvent, SnapioEvent } from '../../models/events';
 import { OrganizedEvents } from '../../models/organized-events';
 
 @Component({
@@ -41,8 +41,6 @@ export class Visualize {
       const content = await file.text();
 
       await this.parseLogs(content);
-
-      console.log('Log file content:', content);
     } catch (e) {
       console.error('Error initiating:', e);
       this.snackbar.openError(e instanceof Error ? e : `Unknown error occurred while initiating visualization, ${ e }`);
@@ -54,9 +52,9 @@ export class Visualize {
     const lines = content.split('\n');
     const events: SnapioEvent[] = [];
     for (const line of lines) {
-        if (line.trim().length === 0) {
-          continue;
-        }
+      if (line.trim().length === 0) {
+        continue;
+      }
       try {
         const asJson = JSON.parse(line.trim());
         if ('message' in asJson && 'timestamp' in asJson) {
@@ -81,6 +79,31 @@ export class Visualize {
               __time: new Date(asJson.timestamp),
               ...asJson
             } as ErrorEvent);
+          } else if (asJson.message == "Event sent" && 'event' in asJson && 'type' in asJson.event) {
+            events.push({
+              __id: `iac.${ asJson.fromActor }.${ asJson.toActor }.${ asJson.event.type }.${ asJson.timestamp }`,
+              __type: 'InterActorCommunicationEvent',
+              __time: new Date(asJson.timestamp),
+              eventSent: asJson,
+            } as InterActorCommunicationEvent)
+          } else if (asJson.message == "Event received" && 'event' in asJson && 'type' in asJson.event) {
+            const time = new Date(asJson.timestamp);
+            const iacSentEvent = events.find((e): e is InterActorCommunicationEvent =>
+              e.__time >= new Date(time.getTime() - 1) && e.__time <= new Date(time.getTime() + 1)
+              && e.__type == 'InterActorCommunicationEvent'
+              && e.eventSent?.toActor == asJson.atActor
+              && e.eventSent?.event?.type == asJson.event?.type
+              && e.eventReceived == null);
+            if (iacSentEvent) {
+              iacSentEvent.eventReceived = asJson;
+            } else {
+              events.push({
+                __id: `iac.${ asJson.atActor }.${ asJson.event.type }.${ asJson.timestamp }`,
+                __type: 'InterActorCommunicationEvent',
+                __time: new Date(asJson.timestamp),
+                eventReceived: asJson,
+              } as InterActorCommunicationEvent)
+            }
           }
         }
       } catch (e) {
@@ -121,12 +144,16 @@ export class Visualize {
                                         events: (secondEvents ?? [])
                                           .toSorted((a, b) => a.__time.getTime() - b.__time.getTime())
                                           .map((event) => {
-                                            const from = (event.__type == 'ActorInitializationEvent')
+                                            const from = (event.__type == 'InterActorCommunicationEvent')
+                                              ? event.eventSent?.fromActor
+                                              : (event.__type == 'ActorInitializationEvent')
                                               ? event.inActor
                                               : (event.__type == 'ActorFinalizationEvent')
                                               ? event.actor
                                               : null;
-                                            const to = (event.__type == 'ActorInitializationEvent')
+                                            const to = (event.__type == 'InterActorCommunicationEvent')
+                                              ? event.eventReceived?.atActor ?? event.eventSent?.toActor
+                                              : (event.__type == 'ActorInitializationEvent')
                                               ? event.actor
                                               : (event.__type == 'ActorFinalizationEvent')
                                               ? event.inActor
@@ -138,22 +165,17 @@ export class Visualize {
                                                   ? 'LEFT'
                                                   : 'NONE'))
                                               : 'NONE';
+                                            const fromActor = ACTORS.includes(from!) ? from! : 'anonymous';
+                                            const toActor = ACTORS.includes(to!) ? to! : 'anonymous';
                                             return {
                                               event,
                                               direction: direction,
+                                              millisecond: event.__time.getMilliseconds().toString().padStart(3, '0'),
                                               actorAction: {
-                                                ...((event.__type == 'ActorInitializationEvent')
-                                                  ? (ACTORS.includes(event.actor)
-                                                    ? { [event.actor]: 'TO' as const, [event.inActor]: 'FROM' as const }
-                                                    : { ['anonymous']: 'TO' as const, [event.inActor]: 'FROM' as const })
-                                                  : {}
-                                                ),
-                                                ...((event.__type == 'ActorFinalizationEvent')
-                                                  ? (ACTORS.includes(event.actor)
-                                                    ? { [event.actor]: 'FROM' as const, [event.inActor]: 'TO' as const }
-                                                    : { ['anonymous']: 'FROM' as const, [event.inActor]: 'TO' as const })
-                                                  : {}
-                                                ),
+                                                [fromActor]: 'FROM' as const,
+                                                [toActor]: 'TO' as const,
+                                                // ...(from ? { [from]: 'FROM' as const } : {}),
+                                                // ...(to ? { [to]: 'TO' as const } : {}),
                                               }
                                             }
                                           })

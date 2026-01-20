@@ -18,6 +18,7 @@ export type OrganizedEvents = {
                 actorAction: Partial<Record<Actors, ActorActionType>>;
                 direction: 'LEFT' | 'RIGHT' | 'NONE';
                 event: SnapioEvent;
+                millisecond: string;
               }[];
             }[];
           }[];

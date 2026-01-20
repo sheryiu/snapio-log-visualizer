@@ -10,6 +10,8 @@
   }
 </header>
 @for (yearGroup of organizedEvents().byYear; track yearGroup.year) {
+  <!-- TODO change height to 120 - header -->
+  <div class="h-120"></div>
   <div class="visualize__group ms-4">
     <div class="visualize__group-header visualize__group-header--year">
       <span>{{ yearGroup.year }}</span>
@@ -47,6 +49,7 @@
                                   <div class="visualize__group-contents">
                                     @for (event of secondGroup.events; track event.event.__id) {
                                       <a class="visualize__event" puiHoverable>
+                                        <span class="visualize__event-millisecond">{{ event.millisecond }}</span>
                                         @for (actor of actors; track actor) {
                                           @if (event.actorAction[actor]) {
                                             <div class="visualize__event-actor" [attr.data-type]="event.actorAction[actor]"></div>
@@ -58,6 +61,30 @@
                                           <div class="visualize__event-actor-direction" [attr.data-direction]="event.direction"></div>
                                         }
                                         @switch (event.event.__type) {
+                                          @case ('InterActorCommunicationEvent') {
+                                            <div class="visualize__event--iac">
+                                              @if (event.event.eventReceived && event.event.eventSent) {
+                                                <i class="inline-icon-5 align-sub dark:text-green-600">done_all</i>
+                                                <code>{{ event.event.eventSent.event?.type }}</code>
+                                                <span>from</span>
+                                                <code>{{ event.event.eventSent.fromActor }}</code>
+                                                <span>to</span>
+                                                <code>{{ event.event.eventSent.toActor }}</code>
+                                              } @else if (event.event.eventReceived) {
+                                                <i class="inline-icon-5 align-sub dark:text-green-600">call_received</i>
+                                                <code>{{ event.event.eventReceived.event?.type }}</code>
+                                                <span>at</span>
+                                                <code>{{ event.event.eventReceived.atActor }}</code>
+                                              } @else {
+                                                <i class="inline-icon-5 align-sub dark:text-amber-600">call_missed</i>
+                                                <code>{{ event.event.eventSent?.event?.type }}</code>
+                                                <span>from</span>
+                                                <code>{{ event.event.eventSent?.fromActor }}</code>
+                                                <span>to</span>
+                                                <code>{{ event.event.eventSent?.toActor }}</code>
+                                              }
+                                            </div>
+                                          }
                                           @case ('ActorInitializationEvent') {
                                             <div class="visualize__event--ai">
                                               <span>Initialized</span>
